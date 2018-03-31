@@ -2,10 +2,12 @@
 layout: post
 title: "Elascticsearch 节点优化：调整堆内存大小"
 date: 2018-01-01
-excerpt: "学习如何来优化基于Docker的ES的性能"
+excerpt: "学习如何来优化基于Docker的ES的JVM性能"
 tags: [Elasticsearch,Java,Docker]
 slug: es-adj-mem
+feature: https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522529189043&di=28588bffd119415e7f1efe842ec7dec6&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D2629733414%2C2046062133%26fm%3D214%26gp%3D0.jpg
 ---
+**本文假设你已经熟悉JVM内存相关参数**
 
 我的配置：
 4台服务器组成的Elasticsearch集群，每台服务器只作为一个节点。
@@ -14,7 +16,7 @@ slug: es-adj-mem
 一台主节点
 内存均为64G
 启动命令：
-```
+{% highlight shell %}
 docker run -d \
  --name=espn-50 \
 -p 9200:9200 \ 
@@ -23,7 +25,7 @@ docker run -d \
  /var/espn/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml \ 
 -v \
 /var/espn/data:/usr/share/elasticsearch/data elasticsearch:5.6.3
-```
+{% endhighlight %}
 4台节点启动命令是一样的，暴露9200 9300端口，并挂载elasticsearch.yml及数据目录。
 模拟了3个月数据，每天一个索引，索引数量90，每个索引有200W~300W条数据不等。
 
@@ -35,9 +37,9 @@ docker run -d \
 ```
 
 再去查询节点情况：
-```
+{% highlight shell %}
 curl 'localhost:9200/_cat/nodes?v=pretty'
-```
+{% endhighlight %}
 发现数据节点的 heap.percent 百分之99。
 通过查询资料，我总结出来大概是这样的：
 
@@ -61,7 +63,7 @@ jvm.options:
 不熟悉的话可以学习一下JVM的相关知识。
 
 启动指令：
-```
+{% highlight shell %}
 docker run -d --name=espn-50 -p 9200:9200 -p 9300:9300 --restart=always -v /var/espn/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml -v  /var/espn/config/jvm.options:/usr/share/elasticsearch/config/jvm.options -v /var/espn/data:/usr/share/elasticsearch/data elasticsearch:5.6.3
-```
+{% endhighlight %}
 将jvm.options也挂载到docker容器内。注意，jvm.options的权限应该是可读可写可执行的。

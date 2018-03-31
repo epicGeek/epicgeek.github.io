@@ -6,6 +6,7 @@ excerpt: "Elasticsearch的入门学习，包括基础概念和基本DSL书写和
 tags: [Elasticsearch]
 slug: es-basic
 category: elasticsearch
+feature: https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522529401938&di=995eb4cb0f472e3672a405b8b55fa131&imgtype=0&src=http%3A%2F%2Fimages2015.cnblogs.com%2Fblog%2F759428%2F201604%2F759428-20160409095252062-1930934147.png
 ---
 
 
@@ -32,25 +33,31 @@ ES是近似实时的查询平台。这意味着一条数据从开始索引到它
 使用Docker来安装并运行ES：
 
 *下载最新镜像:
-
+{% highlight shell%}
 $ docker pull elasticsearch
-
+{% endhighlight %}
 * 启动elasticsearch:
-
+{% highlight shell%}
 $ docker run -d --name=espn -p 9200:9200 -p 9300:9300 -v /data/espn:/data/espn elasticsearch:5.6.3
-
+{% endhighlight %}
 * 验证运行：
-
+{% highlight shell%}
 $ curl localhost:9200
-
+{% endhighlight %}
 * 在浏览器中访问：
+```
 %espn-host-ip%:9200
+```
 在服务器上，挂载目录/var/espn下生成 config文件夹和data文件夹。
 ## 关于Kibana
 Kibana是ES的可视化管理工具，建议安装。
+{% highlight shell%}
 $ docker pull kibana
+{% endhighlight %}
 启动kibana:
+{% highlight shell%}
 $ docker run --name=kibana --link espn:elasticsearch -p 5601:5601 -d kibana
+{% endhighlight %}
 在浏览器访问:$kibana_host$:5601，如果页面可以访问，说明kibana已安装成功。
 ## 探索集群
 RESTful风格API
@@ -63,15 +70,15 @@ RESTful风格API
 * 执行进阶的查询操作：分页、排序、过滤、脚本、聚合等
 
 ## 集群健康
+{% highlight shell%}
 kibana console:GET /_cat/health?v
 
 $curl -XGET 'localhost:9200/_cat/health?v&pretty'
-
+{% endhighlight %}
 响应：
 ```
 epoch      timestamp cluster       status node.total node.data shards pri relo init unassign
 1475247709 17:01:49  elasticsearch green           1         1      0   0    0    0        0        
-
 ```
 
 可以看到目前的集群名称、健康状况、节点个数、节点数据、分片等信息。
@@ -84,31 +91,38 @@ red:某些数据由于一些原因不可用。
 从上面的响应来看，我们看到总共有一个节点，0个分片，因为暂时没有数据。注意到由于使用了默认的集群名称，并且ES默认使用单播网络来在同一台机器上查找其他节点，那么就有可能意外地发生多个节点自动加入一个集群的情况。在这种情形下，有可能看到多于一个节点的响应。
 
 查看节点信息：
+```
 GET /_cat/nodes?v
-
+```
+{% highlight shell%}
 $curl -XGET 'localhost:9200/_cat/nodes?v&pretty'
+{% endhighlight %}
 
 这样就查看到集群上的节点了.（这里的pretty是指如果有json数据，就以较为美观的形式打印出来）
 
 ## 查看全部索引
+```
 GET /_cat/indices?v
-
+```
+{% highlight shell%}
 $curl -XGET 'localhost:9200/_cat/indices?v&pretty'
-
+{% endhighlight %}
 ## 建立索引
+```
 PUT /customer?pretty
 GET /_cat/indices?v
-
+```
+{% highlight shell%}
 curl -XPUT 'localhost:9200/customer?pretty&pretty'
 curl -XGET 'localhost:9200/_cat/indices?v&pretty'
-
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "acknowledged" : true,
   "shards_acknowledged" : true
 }
-```
+{% endhighlight %}
 ```
 health status index    uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 yellow open   customer 95SQ4TSUT7mWBT7VNHH67A   5   1          0            0       260b           260b
@@ -118,21 +132,21 @@ yellow open   customer 95SQ4TSUT7mWBT7VNHH67A   5   1          0            0   
 ## 索引并查询文档
 
 向指定的索引添加文档时，必须指定这个文档的类型。向customer索引添加external类型数据：
-```
+{% highlight json %}
 PUT /customer/external/1?pretty
 {
   "name": "John Doe"
 }
-```
-```
+{% endhighlight %}
+{% highlight json %}
 $curl -XPUT 'localhost:9200/customer/external/1?pretty&pretty' -H 'Content-Type: application/json' -d'
 {
   "name": "John Doe"
 }
 '
-```
+{% endhighlight %}
 响应:
-```
+{% highlight json %}
 {
   "_index" : "customer",
   "_type" : "external",
@@ -146,19 +160,19 @@ $curl -XPUT 'localhost:9200/customer/external/1?pretty&pretty' -H 'Content-Type:
   },
   "created" : true
 }
-```
+{% endhighlight %}
 从响应数据能看，新的数据已经添加到customer索引，类型为external。并且每条数据都有一条内部的id.
 注意：添加数据时，如果索引不存在，会自动建立索引。
 
 查询刚刚输入的数据：
-```
+{% highlight shell %}
 GET /customer/external/1?pretty
-```
-```
+{% endhighlight %}
+{% highlight shell %}
 curl -XGET 'localhost:9200/customer/external/1?pretty&pretty'
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "_index" : "customer",
   "_type" : "external",
@@ -167,7 +181,7 @@ curl -XGET 'localhost:9200/customer/external/1?pretty&pretty'
   "found" : true,
   "_source" : { "name": "John Doe" }
 }
-```
+{% endhighlight %}
 除了一些描述性质的数据之外在没什么了。仅仅返回JSON文档数据而已。
 
 ## 删除索引
@@ -176,11 +190,10 @@ curl -XGET 'localhost:9200/customer/external/1?pretty&pretty'
 DELETE /customer?pretty
 GET /_cat/indices?v
 ```
-```
+{% highlight shell %}
 curl -XDELETE 'localhost:9200/customer?pretty&pretty'
 curl -XGET 'localhost:9200/_cat/indices?v&pretty'
-
-```
+{% endhighlight %}
 
 到目前为止，已经学习了如何增删查索引。总结起来，URL是遵循这样的格式的：
 ```
@@ -193,41 +206,41 @@ ES有着近乎实时的查询数据、修改数据的能力。默认情况下，
 
 ### 索引/替换文档
 之前已经输入一条数据
-```
+{% highlight json %}
 PUT /customer/external/1?pretty
 {
   "name": "John Doe"
 }
-```
-```
+{% endhighlight %}
+{% highlight json %}
 curl -XPUT 'localhost:9200/customer/external/1?pretty&pretty' -H 'Content-Type: application/json' -d'
 {
   "name": "John Doe"
 }
 '
 
-```
+{% endhighlight %}
 
 这条数据ID为1，那么，如果再次PUT一条ID相同的数据，会覆盖原来的数据。
 
 在添加数据时，是否带ID是可选的。不指定ID的请求方法：
-```
+{% highlight json %}
 POST /customer/external?pretty
 {
   "name": "Jane Doe"
 }
-```
-```
+{% endhighlight %}
+{% highlight shell %}
 curl -XPOST 'localhost:9200/customer/external?pretty&pretty' -H 'Content-Type: application/json' -d'
 {
   "name": "Jane Doe"
 }
 '
 
-```
+{% endhighlight %}
 
 响应:
-```
+{% highlight json %}
 {
   "_index": "customer",
   "_type": "external",
@@ -241,7 +254,7 @@ curl -XPOST 'localhost:9200/customer/external?pretty&pretty' -H 'Content-Type: a
   },
   "created": true
 }
-```
+{% endhighlight %}
 但是这样的话，文档的ID为一串UUID了。
 
 ## 更新文档
@@ -249,30 +262,30 @@ curl -XPOST 'localhost:9200/customer/external?pretty&pretty' -H 'Content-Type: a
 update操作同样是ES支持的。需要注意的是，ES实际上并没有在后台就地更新数据。
 而是在一次更新操作中，删除旧数据并写入新数据。
 
-```
+{% highlight json %}
 POST /customer/external/1/_update?pretty
 {
   "doc": { "name": "Jane Doe", "age": 20 }
 }
-```
-```
+{% endhighlight %}
+{% highlight shell %}
 curl -XPOST 'localhost:9200/customer/external/1/_update?pretty&pretty' -H 'Content-Type: application/json' -d'
 {
   "doc": { "name": "Jane Doe" , "age":20 }
 }
 '
 
-```
+{% endhighlight %}
 注意：Update时，键值对的变化
 
 还可以在update时，使用简单的脚本
 
-```
+{% highlight json %}
 POST /customer/external/1/_update?pretty
 {
   "script" : "ctx._source.age += 5"
 }
-```
+{% endhighlight %}
 
 在上面的例子中，ctx._source指的是当前源文档。
 需要注意的是，这种以上几种写法的添加、修改数据每次只能影响到一条文档数据。在将来，ES可能会提供像SQL里面的WHERE条件来进行批量的更新。
@@ -287,21 +300,21 @@ DELETE /customer/external/2?pretty
 
 除了增删改查单个独立文档之外，ES还提供了批量上述操作。_bulk API的批量操作上效率非常高，而且尽可能的少使用网络切换。
 
-```
+{% highlight json %}
 POST /customer/external/_bulk?pretty
 {"index":{"_id":"1"}}
 {"name": "John Doe" }
 {"index":{"_id":"2"}}
 {"name": "Jane Doe" }
-```
+{% endhighlight %}
 上面的请求把ID为1和2的数据name字段改变了。
 
-```
+{% highlight json %}
 POST /customer/external/_bulk?pretty
 {"update":{"_id":"1"}}
 {"doc": { "name": "John Doe becomes Jane Doe" } }
 {"delete":{"_id":"2"}}
-```
+{% endhighlight %}
 更新文档1的，再删除文档2
 
 Bulk API不会因为操作中的某一步失败而失败。如果其中一步的操作失败了，它将继续后续的操作。Bulk的返回值将包含每一步的状态（根据发送的顺序），由此可以查看特定的步骤是否成功执行。
@@ -311,7 +324,7 @@ Bulk API不会因为操作中的某一步失败而失败。如果其中一步的
 
 ### 样本数据集
 
-```
+{% highlight json %}
 {
     "account_number": 0,
     "balance": 16623,
@@ -325,21 +338,21 @@ Bulk API不会因为操作中的某一步失败而失败。如果其中一步的
     "city": "Hobucken",
     "state": "CO"
 }
-```
+{% endhighlight %}
 这是一条比较实际的数据。现在尝试向ES导入一千条数据。新建文件"account.json"
 文件内容:
-```
+{% highlight json %}
 {"index":{"_id":"1"}}
 {"account_number":1,"balance":39225,"firstname":"Amber","lastname":"Duke","age":32,"gender":"M","address":"880 Holmes Lane","employer":"Pyrami","email":"amberduke@pyrami.com","city":"Brogan","state":"IL"}
-```
+{% endhighlight %}
 ### 载入数据文件
 
 将数据文件LOAD进集群：
 上传account.json至 $ES$/data下 (本文档为/var/espn/data)
-```
+{% highlight shell %}
 curl -H "Content-Type: application/json" -XPOST 'localhost:9200/bank/account/_bulk?pretty&refresh' --data-binary "@accounts.json"
 curl 'localhost:9200/_cat/indices?v'
-```
+{% endhighlight %}
 
 通过响应可以看见，bank索引成功建立，account类型成功建立，数据已经LOAD至集群中。
 
@@ -348,15 +361,15 @@ curl 'localhost:9200/_cat/indices?v'
 使用request body可以使查询的可读性增强。这里先举例使用URL传参来查询，在后面的文档中会提到使用request body.
 
 在URL中，索引的后面加入关键字"_search".这里举例来查询所有的bank下面的文档数据。
-```
+{% highlight shell %}
 curl -XGET 'localhost:9200/bank/_search?q=*&sort=account_number:asc&pretty&pretty'
 
-```
+{% endhighlight %}
 我们先来看一下URL的含义：
 _search?q=* 意思是查询bank索引下全部数据. sort=account_number:asc 意思是以account_number:asc字段的正序排序。
 
 响应：
-```
+{% highlight json %}
 {
   "took" : 63,
   "timed_out" : false,
@@ -387,7 +400,7 @@ _search?q=* 意思是查询bank索引下全部数据. sort=account_number:asc �
     ]
   }
 }
-```
+{% endhighlight %}
 从响应上来看：
 * took :查询用了多少毫秒
 * timed_out:查询是否超时
@@ -400,7 +413,7 @@ _search?q=* 意思是查询bank索引下全部数据. sort=account_number:asc �
 
 下面介绍用request body来实现上面的查询的写法：
 
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
   {
     "query": { "match_all": {} },
@@ -410,41 +423,41 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 '
 
-```
+{% endhighlight %}
 区别是：写request body的方法是直接向search API发送JSON格式数据，而不是在url里传输参数。我们稍后讨论JSON查询的方法。
 
 
 ## 执行搜索
 前面我们说明了基本的查询，现在我们来深入学习。默认情况下，查询结果返回值中，文档数据只是一部分，称它为"source"(因为数据在_source字段里)。如果不想看见文档的全部字段，我们可以指定一些字段。
-```
+{% highlight json %}
 GET /bank/_search
 {
   "query": { "match_all": {} },
   "_source": ["account_number", "balance"]
 }
-```
+{% endhighlight %}
 这个例子的返回结果中，文档数据只包含account_number和balance字段。
 如果你有SQL背景的话，这种查询可以理解为 select field1,field2 from table 这种查询。
 
 上面的例子中，我们的查询结果都是使用match_all,下面介绍match的用法。
 下面这个例子，查询account_number为20的文档：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": { "match": { "account_number": 20 } }
 }
 '
-```
+{% endhighlight %}
 查询address：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": { "match": { "address": "mill" } }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 11,
   "timed_out": false,
@@ -536,20 +549,20 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 注意，match不是“等于”的概念，而是包括的概念。
 
 看这个例子：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": { "match": { "address": "mill lane" } }
 }
 '
-```
+{% endhighlight %}
 
 响应：
-```
+{% highlight json %}
 {
   "took": 21,
   "timed_out": false,
@@ -755,18 +768,18 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 从结果可以看出，响应数据中，address字段里要么包含"mill"，要么包含"lane"。
 现在介绍match_phrase的用法：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": { "match_phrase": { "address": "mill lane" } }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 18,
   "timed_out": false,
@@ -801,14 +814,14 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 可以看出，查询的结果是address字段包含"mill lane"的。
 总结：match是包含的意思，而不是等于的意思。使用"match"时，多个词语以空格隔开，表示OR的逻辑关系。
 
 下面介绍bool查询。
 bool查询提供查询条件之间的逻辑关系，下面举例说明：
 
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": {
@@ -821,9 +834,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 2,
   "timed_out": false,
@@ -858,14 +871,14 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 从查询请求上看，查询条件服从这种逻辑关系：
 条件1：address 包含 mill
 条件2：address 包含 lane
 条件1和条件2属于“must”数组，也就是说，查询的数据要同时满足条件1和条件2。
 
 再看一下should关键词的例子：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": {
@@ -878,9 +891,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应:
-```
+{% highlight json %}
 {
   "took": 4,
   "timed_out": false,
@@ -1086,10 +1099,10 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 从响应可以看出，should数组里面包含的条件，满足其一即可。也就是说，should里面的条件是or的逻辑。
 再来看一下must_not关键词的例子：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": {
@@ -1102,9 +1115,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 2,
   "timed_out": false,
@@ -1310,10 +1323,10 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 从查询结果能看出来，返回数据既不满足must_not里的条件1,也不满足条件2。
 下面举一个组合关键词的例子：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": {
@@ -1328,9 +1341,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 4,
   "timed_out": false,
@@ -1536,7 +1549,7 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 从响应数据我们知道，一定满足must里面的年龄为40的条件，也满足state不为ID的条件。
 使用bool查询，可以完成复杂的逻辑查询。
 
@@ -1545,7 +1558,7 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
 在前面的说明中，我们暂时跳过"score"字段。score描述的是查询结果与查询请求的匹配度量。score越大，表示这条数据与查询越相关。但是查询并不一定一直要求产生分数，尤其是需要对查询结果进行过滤的时候。ES检测到这种情形并自动调整查询，以免生成无用的score.
 
 之前介绍的bool查询是支持过滤的。下面举个例子来查询balance在20000到30000之间的数据。
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "query": {
@@ -1563,10 +1576,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 2,
   "timed_out": false,
@@ -1772,14 +1784,14 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     ]
   }
 }
-```
+{% endhighlight %}
 此bool查询包括一个match_all关键字，和range关键字。我们可以替换查询体重任意一部分来实现过滤查询。除了match_all,match,bool,range之外，还有很多种查询类型。暂时在这里不深入介绍。
 
 ## 执行聚合
 
 ES提供的聚合(aggregation)功能可以用来计算一些统计数据。可以简单的类比成SQL里面的Group by这一类的聚合函数。但是ES的聚合更强大的是，在一条查询请求中可以同时得到文档数据和统计数据。
 下面举例说明：
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "size": 0,
@@ -1792,9 +1804,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应：
-```
+{% highlight json %}
 {
   "took": 47,
   "timed_out": false,
@@ -1857,17 +1869,17 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     }
   }
 }
-```
+{% endhighlight %}
 从SQL的角度来看，这条聚合查询类似于:
-```
+{% highlight sql %}
 SELECT state, COUNT(*) FROM bank GROUP BY state ORDER BY COUNT(*) DESC;
-```
+{% endhighlight %}
 从响应数据来看，可以看到有27个户主居住在ID(爱达荷州),紧跟着是27个户主居住于TX（德克萨斯）。
 需要注意的是，请求中的size=0意思是，我们不想看到查询到的数据，而是只看聚合数据即可。
 
 在上个查询基础上，我们可以查询平均每个州的账户的平均余额(默认显示前十条并倒序排列）。
 
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "size": 0,
@@ -1888,9 +1900,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
 }
 '
 
-```
+{% endhighlight %}
 响应:
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "size": 0,
@@ -1914,11 +1926,11 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
 }
 '
 
-```
+{% endhighlight %}
 需要注意到的是，我们在group_by_state的聚合体里面又嵌套了一层average_balance的聚合体。这是一种很常见的做法，所有的聚合体都应该遵守这样的样式。通过层层嵌套最终得到想要查询的数据。
 
 在上一个聚合查询基础上，我们对average_balance做降序排列。
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "size": 0,
@@ -1941,9 +1953,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应:
-```
+{% highlight json %}
 {
   "took": 17,
   "timed_out": false,
@@ -2036,10 +2048,10 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     }
   }
 }
-```
+{% endhighlight %}
 
 下面举一个复杂的例子：先按照年龄段统计( 20-29, 30-39, 40-49)，然后按照性别分组，最后计算每个年龄段、各个性别的平均余额。
-```
+{% highlight json %}
 curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/json' -d'
 {
   "size": 0,
@@ -2080,9 +2092,9 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
   }
 }
 '
-```
+{% endhighlight %}
 响应:
-```
+{% highlight json %}
 {
   "took": 11,
   "timed_out": false,
@@ -2181,7 +2193,7 @@ curl -XGET 'localhost:9200/bank/_search?pretty' -H 'Content-Type: application/js
     }
   }
 }
-```
+{% endhighlight %}
 还有许多其他的聚合方法，在这不再赘述。其他聚合查询可参考官方文档：
 
 https://www.elastic.co/guide/en/elasticsearch/reference/5.6/search-aggregations.html
