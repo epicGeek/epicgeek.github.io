@@ -5,6 +5,7 @@ date: 2017-12-03
 excerpt: "Elasticsearch的入门学习，包括基础概念和基本DSL书写和操作."
 tags: [Elasticsearch]
 slug: es-basic
+category: elasticsearch
 ---
 
 
