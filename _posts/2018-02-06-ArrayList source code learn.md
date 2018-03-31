@@ -4,7 +4,7 @@ title: "ArrayList源码学习"
 date: 2018-02-06
 excerpt: "学习Java经典集合框架里的ArrayList."
 tags: [Java]
-comments: false
+slug: arraylist-source
 ---
 
 *ArrayList在平时工作中几乎天天都在用。回想起三四年前在刚开始学编程时，只使用数组的恐怖支配。正好最近项目不忙，抽出来点时间看看源码是怎样的*

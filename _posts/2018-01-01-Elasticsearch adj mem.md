@@ -4,6 +4,7 @@ title: "Elascticsearch 节点优化：调整堆内存大小"
 date: 2018-01-01
 excerpt: "学习如何来优化基于Docker的ES的性能"
 tags: [Elasticsearch,Java,Docker]
+slug: es-adj-mem
 ---
 
 我的配置：

@@ -4,7 +4,7 @@ title: "Nginx配置简单的反向代理"
 date: 2018-03-08
 excerpt: "学习一下如何简单的配置Nginx反向代理"
 tags: [Nginx,Java]
-comments: false
+slug: nginx-reserve-config
 ---
 
 客户提出需求将现在的项目改造为HTTPS的。由于现在的架构是前后端分离的形式，前端使用nginx服务器，后端是基于Spring Boot的微服务。拿一个功能模块举例，这个功能称为pgw。

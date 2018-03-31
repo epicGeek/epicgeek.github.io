@@ -4,7 +4,7 @@ title: "Elasticsearch Java API的基本使用"
 date: 2017-12-15
 excerpt: "学习使用Java来对ES进行增删改查等操作."
 tags: [Elasticsearch,Java]
-comments: false
+slug: es-java-api
 ---
 
 

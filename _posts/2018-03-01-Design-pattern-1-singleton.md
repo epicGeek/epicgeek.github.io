@@ -4,7 +4,7 @@ title: "设计模式学习之一：单例模式"
 date: 2018-03-01
 excerpt: "学习什么是单例模式"
 tags: [Design pattern,Java]
-comments: false
+slug: dp-singleton
 ---
 
 ## 为什么用单例模式
