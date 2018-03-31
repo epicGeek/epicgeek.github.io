@@ -1,37 +1,29 @@
 ---
 layout: page
-title: About the Theme
-tags: [about, Jekyll, theme, moon]
-date: 2016-03-21
+title: About Me
+tags: [about, Jekyll, theme]
+date: 2018-03-21
 comments: false
 ---
     
-<center><a href="http://taylantatli.github.io/Moon"><b>Moon</b></a> is a minimal, one column jekyll theme.</center>
+<!--<center><a href="http://taylantatli.github.io/Moon"><b>Moon</b></a> is a minimal, one column jekyll theme.</center>-->
 
-## Features
-* Minimal, you can focus on your content
-* Responsive
-* Disqus integration
-* Syntax highlighting
-* Optional post image
-* Social icons
-* Page for sharing projects
-* Optional background image
-* Simple navigation menu
-* MathJax support
 
-## Preview
+## This is me
+Hi,你好。我是裴楠，一个90后程序员。为了记录自己的一点人生经验。我建立了这个博客。希望你喜欢这里！
 
-{% capture images %}
-    https://cloud.githubusercontent.com/assets/754514/14509720/61c61058-01d6-11e6-93ab-0918515ecd56.png
-    https://cloud.githubusercontent.com/assets/754514/14509716/61ac6c8e-01d6-11e6-879f-8308883de790.png
-{% endcapture %}
-{% include gallery images=images caption="Screenshots of Moon Theme" cols=2 %}
+后端技术用的比较多，主要使用Java和Python.
 
-See a [live version of Moon](http://taylantatli.github.io/Moon) hosted on GitHub.
+欢迎骚扰！
 
-## Getting Started
-
-To learn how to install and use this theme check out the [Setup Guide](http://taylantatli.me/Moon/moon-theme/) for more information.
-      
-[Install Moon](https://github.com/TaylanTatli/Moon){: .btn}
+<h3 class="title" style="font-size:30px;">
+    <a class="social-btn" href="mailto:epicgeek@126.com" target="_blank" rel="noopener noreferrer">
+        <i class="fa fa-fw fa-envelope-square"></i>
+    </a> 
+    <a class="social-btn" href="http://github.com/epicGeek" target="_blank" rel="noopener noreferrer">
+        <i class="fa fa-fw fa-github"></i>
+    </a> 
+    <a class="social-btn" href="http://steamcommunity.com/id/neilson3r" target="_blank" rel="noopener noreferrer">
+        <i class="fa fa-fw fa-steam-square"></i>
+     </a>
+</h3>

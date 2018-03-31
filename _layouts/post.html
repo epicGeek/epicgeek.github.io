@@ -45,5 +45,19 @@ layout: compress
     <!-- MathJax -->
     <script async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     {% endif %}
+    <div id="gitmentContainer"></div>
+    <link rel="stylesheet" href="../assets/css/default.css">
+    <script src="../assets/js/gitment.js"></script>
+    <script>
+    var gitment = new Gitment({
+        owner: 'epicgeek@126.com',
+        repo: 'epicgeek.github.io',
+        oauth: {
+            client_id: 'c8c71827615854e594c7',
+            client_secret: '708493a0eec2fc2e09550b0ed50b05c17932df0f',
+        },
+    });
+    gitment.render('gitmentContainer');
+    </script>
 </body>
 </html>
