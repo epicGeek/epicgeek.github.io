@@ -4,7 +4,7 @@ bio:                '欢迎你，朋友'
 description:        "Welcome to my playground."
 reading_time:       true
 words_per_minute:   200
-logo:               'assets/img/beta.jpg'
+logo:               'assets/img/favicon.png'
 background:         'assets/img/e.jpg'
 tiled_bg:           true   # Set this true if you want to tile your background image, otherwise it will be covered
 locale:             en_US
