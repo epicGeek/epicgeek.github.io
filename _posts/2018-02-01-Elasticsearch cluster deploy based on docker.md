@@ -4,6 +4,7 @@ title: "基于Docker的Elasticsearch集群部署"
 date: 2018-02-01
 excerpt: "学习如何来部署基于docker的Elastic集群"
 tags: [Elasticsearch,Docker]
+slug: es-cluster-deploy
 ---
 
 
