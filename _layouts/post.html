@@ -36,26 +36,25 @@ layout: compress
                 <div class="entry-meta">
                 {% include meta.html %}
                 </div>
-                <div id="gitmentContainer"></div>
-                <link rel="stylesheet" href="../assets/css/default.css">
-                <script src="../assets/js/gitment.js"></script>
-                <script>
-                var gitment = new Gitment({
-                    id: '{{ page.date }}',  // 可选, 默认为 location.href
-                    owner: 'epicgeek',
-                    repo: 'epicgeek.github.io',
-                    oauth: {
-                        client_id: 'c8c71827615854e594c7',
-                        client_secret: '708493a0eec2fc2e09550b0ed50b05c17932df0f',
-                    },
-                });
-                gitment.render('gitmentContainer');
-                </script>
             </div>
-            
+            <div id="gitmentContainer"></div>
+            <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+            <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+            <script>
+            var gitment = new Gitment({
+                id: '{{page.date}}',
+                owner: 'Your GitHub username',
+                repo: 'The repo to store comments',
+                oauth: {
+                    client_id: 'Your client ID',
+                    client_secret: 'Your client secret',
+                },
+            });
+            gitment.render('gitmentContainer');
+            </script>
         </div>
-        {% if page.comments and site.disqus_shortname %}<section id="disqus_thread" class="animated fadeInUp"></section><!-- /#disqus_thread -->{% endif %}
-        
+
+        <!-- {% if page.comments and site.disqus_shortname %}<section id="disqus_thread" class="animated fadeInUp"></section><!-- /#disqus_thread --><!--{% endif %} -->
     </header>
     {% include scripts.html %}
     {% if site.mathjax == true %}
