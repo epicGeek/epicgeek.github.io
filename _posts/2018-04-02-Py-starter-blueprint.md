@@ -24,6 +24,7 @@ feature: https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=152
 
 我们距离说明：
 新建工程，在工程里我们有如下文件：
+
 app
 |-- __ _init_ __.py    # pycharm生成
 |-- controller1.py     # 接口1
@@ -33,6 +34,7 @@ app
 按照SpringBoot习惯，应用总是有一个main入口的。按照习惯，flask应用的入口为manager.py
 
 如果按照上一篇文章里的接口的写法，我们在controller1.py和controller2.py里的代码是这样的：
+
 { % highlight python % }
 from flask import Flask
 con1= Flask(__name__)
@@ -66,8 +68,11 @@ def con1():
 
 { % endhighlight % }
 
+
 controller2.py:
+
 { % highlight python % }
+
 from flask import Blueprint   # controller1.py的复制
 con2_blueprint = Blueprint('con2',__name__)
 
@@ -80,8 +85,11 @@ def con2():
 { % endhighlight % }
 
 manager.py:
+
 **这里的代码很重要了，注意看**
+
 { % highlight python % }
+
 from controller1 import con1_blueprint  # 导入全部蓝图变量
 from controller2 import con2_blueprint
 from flask import Flask
@@ -107,7 +115,7 @@ if __name__ == '__main__':
 
 优化后的代码：
 
-controller1.py 和controller2.py代码不变
+controller1.py 和 controller2.py代码不变
 
  __ _init_ __.py ：
 
@@ -121,6 +129,7 @@ app.register_blueprint(con2_blueprint, url_prefix = '/api/v2')  # 将全部蓝�
 { % endhighlight % }
 
 manager.py:
+
 { % highlight python % }
 from app import app   # 导入app包下的init脚本中初始化好的app对象
 
