@@ -3,7 +3,7 @@ layout: post
 title: "Python开发之路系列：Flask入门使用"
 date: 2018-04-02
 excerpt: "Flask应用的最简单实现."
-tags: [Python]
+tags: [Python,Flask]
 slug: py-starter-flask-intro
 category: Python
 feature: https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522649764826&di=fe825e1d3dc597742ee7593eccf50379&imgtype=0&src=http%3A%2F%2Fstatic.open-open.com%2Fnews%2FuploadImg%2F20150422%2Fflask.jpg
